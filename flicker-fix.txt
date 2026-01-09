@@ -1,0 +1,6 @@
+If RTX or any NVIDIA cards on Arch giving flickers just simply turn off adaptive sync in settings if Plasma KDE Settings or any third party apps
+
+if hyprland or any window manager on monitor.conf or conf file use vrr,0
+
+For instance:
+monitor=desc:GIGA-BYTE TECHNOLOGY CO. LTD. G27FC A 0x00000B57,1920x1080@165,0x0,1.2,vrr,0
