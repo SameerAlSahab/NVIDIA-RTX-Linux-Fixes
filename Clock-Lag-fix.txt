@@ -1,0 +1,63 @@
+Check max clock first with nvidia-smi -q | grep -A 5 "Max Clocks" in any terminal 
+
+Example
+    nvidia-smi -q | grep -A 5 "Max Clocks"
+
+    Max Clocks
+        Graphics                                       : 2100 MHz
+        SM                                             : 2100 MHz
+        Memory                                         : 7001 MHz
+        Video                                          : 1950 MHz
+    Max Customer Boost Clocks
+
+#
+here graphics is 2100mhz max for me as i am testing a common RTX 3050 card
+and memory is 7001 mhz
+
+umm , lets set it to minimium 400-500 mhz so it never gives lag or fps drops after getting up from idle states. You can do more or half of total max mhz.
+
+now ,we will keep it permanent accross reboots because it is not persistent at all
+
+Create a systemd service
+#
+
+sudo nano /etc/systemd/system/nvidia-fix.service
+
+#
+now:
+
+#Copy exactly same
+
+[Unit]
+Description=Fix NVIDIA idle lag
+After=graphical.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/nvidia-smi -pm 1
+ExecStart=/usr/bin/nvidia-smi -lgc 300,2100
+
+[Install]
+WantedBy=multi-user.target
+
+Then enable it:
+
+sudo systemctl enable nvidia-fix.service
+sudo systemctl start nvidia-fix.service
+
+# Maximum Performance (May take more power)
+
+sudo mkdir -p /etc/X11/xorg.conf.d
+sudo nano /etc/X11/xorg.conf.d/20-nvidia.conf
+
+#Paste exactly
+Section "Device"
+    Identifier "NVIDIA Card"
+    Driver "nvidia"
+    Option "RegistryDwords" "PowerMizerEnable=0x1; PerfLevelSrc=0x2222"
+    Option "PowerMizerDefault" "0x1"
+    Option "PowerMizerDefaultAC" "0x1"
+EndSection
+
+
+Now reboot
