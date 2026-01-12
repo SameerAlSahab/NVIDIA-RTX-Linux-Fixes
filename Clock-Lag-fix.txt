@@ -15,6 +15,7 @@ here graphics is 2100mhz max for me as i am testing a common RTX 3050 card
 and memory is 7001 mhz
 
 umm , lets set it to minimium 400-500 mhz so it never gives lag or fps drops after getting up from idle states. You can do more or half of total max mhz.
+In my case , i will use 800mhz as minimium.
 
 now ,we will keep it permanent accross reboots because it is not persistent at all
 
@@ -35,7 +36,7 @@ After=graphical.target
 [Service]
 Type=oneshot
 ExecStart=/usr/bin/nvidia-smi -pm 1
-ExecStart=/usr/bin/nvidia-smi -lgc 300,2100
+ExecStart=/usr/bin/nvidia-smi -lgc 800,2100
 
 [Install]
 WantedBy=multi-user.target
@@ -59,5 +60,28 @@ Section "Device"
     Option "PowerMizerDefaultAC" "0x1"
 EndSection
 
+# More
+sudo nano /usr/lib/systemd/system-sleep/nvidia-clocks
+
+Paste this:
+
+#!/bin/bash
+
+case $1 in
+  pre)
+    # Before sleep: reset clocks to auto
+    /usr/bin/nvidia-smi -pm 0
+    /usr/bin/nvidia-smi -rgc
+    ;;
+  post)
+    # After wake: lock clocks again
+    /usr/bin/nvidia-smi -pm 1
+    /usr/bin/nvidia-smi -lgc 800,2100
+    ;;
+esac
+
+Make it executable:
+
+sudo chmod +x /usr/lib/systemd/system-sleep/nvidia-clocks
 
 Now reboot
