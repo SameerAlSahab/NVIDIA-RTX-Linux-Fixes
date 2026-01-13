@@ -37,6 +37,7 @@ After=graphical.target
 Type=oneshot
 ExecStart=/usr/bin/nvidia-smi -pm 1
 ExecStart=/usr/bin/nvidia-smi -lgc 800,2100
+ExecStart=/usr/bin/nvidia-smi -lmc 2000,7001 # I will set 2000mhz as minimium locked 
 
 [Install]
 WantedBy=multi-user.target
